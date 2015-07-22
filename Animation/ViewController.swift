@@ -137,9 +137,14 @@ class ViewController: UIViewController,UIScrollViewDelegate, UITableViewDataSour
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        let cell:UITableViewCell=UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "mycell")
-        cell.textLabel?.text = "Row \(indexPath.row)"
-        return cell
+        var cell = tableView.dequeueReusableCellWithIdentifier("cell") as? UITableViewCell
+        
+        if cell == nil {
+            cell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: "cell")
+        }
+        
+        cell!.textLabel?.text = "Row \(indexPath.row)"
+        return cell!
     }
 
 }
