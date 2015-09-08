@@ -94,6 +94,7 @@ class ViewController: UIViewController,UIScrollViewDelegate, UITableViewDataSour
         } else {
             delta = mainScrollView!.contentOffset.y
             
+//            println(delta)
             if delta > 0 {
             
                 mainImageView!.alpha = min(1 , delta * kBlurFadeInFactor);
@@ -108,7 +109,7 @@ class ViewController: UIViewController,UIScrollViewDelegate, UITableViewDataSour
                 
                 tableView!.contentOffset = CGPointMake (0, delta - backgroundScrollViewLimit);
                 var height:CGFloat = tableView.contentSize.height
-                var maxHeight:CGFloat = tableView.frame.size.height+delta
+                var maxHeight:CGFloat = tableViewHeight! + delta
                 
                 if (maxHeight > height){
                     
@@ -116,7 +117,6 @@ class ViewController: UIViewController,UIScrollViewDelegate, UITableViewDataSour
                 }
 
                 tableView!.frame =  CGRectMake(0, CGRectGetMinY(backgroundScrollView!.frame) + CGRectGetHeight(backgroundScrollView!.frame), tableView!.frame.size.width, maxHeight)
-//                println("In If \(maxHeight)")
 
                 var contentOffsetY:CGFloat = -backgroundScrollViewLimit * kBackgroundParallexFactor
                 backgroundScrollView?.setContentOffset(CGPointMake(0, contentOffsetY), animated: false)
@@ -124,9 +124,8 @@ class ViewController: UIViewController,UIScrollViewDelegate, UITableViewDataSour
             else {
                 
                 backgroundScrollView!.frame = rect
-                tableView!.contentOffset = CGPointMake (0, 0);
                 var height:CGFloat = tableView.contentSize.height
-                var maxHeight:CGFloat = tableView.frame.size.height+delta
+                var maxHeight:CGFloat = tableViewHeight!+delta
                 
                 if (maxHeight > height){
                     
@@ -134,8 +133,9 @@ class ViewController: UIViewController,UIScrollViewDelegate, UITableViewDataSour
                 }
 
 
-//                println("In Else \(maxHeight)")
                 tableView!.frame =  CGRectMake(0, CGRectGetMinY(backgroundScrollView!.frame) + CGRectGetHeight(backgroundScrollView!.frame), tableView!.frame.size.width, maxHeight)
+                tableView!.contentOffset = CGPointMake (0, 0);
+
                 backgroundScrollView?.setContentOffset(CGPointMake(0, -delta * kBackgroundParallexFactor), animated: false)
 
             }
@@ -148,7 +148,7 @@ class ViewController: UIViewController,UIScrollViewDelegate, UITableViewDataSour
     
     func tableView(tableView:UITableView, numberOfRowsInSection section:Int) -> Int
     {
-        return 100
+        return 20
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
