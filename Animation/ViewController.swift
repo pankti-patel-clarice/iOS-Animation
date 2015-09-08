@@ -108,7 +108,7 @@ class ViewController: UIViewController,UIScrollViewDelegate, UITableViewDataSour
                 
                 tableView!.contentOffset = CGPointMake (0, delta - backgroundScrollViewLimit);
                 var height:CGFloat = tableView.contentSize.height
-                var maxHeight:CGFloat = mainScrollView.frame.size.height - tableView.frame.origin.y - backgroundScrollViewLimit //tableView.frame.size.height+delta
+                var maxHeight:CGFloat = tableView.frame.size.height+delta
                 
                 if (maxHeight > height){
                     
@@ -116,7 +116,7 @@ class ViewController: UIViewController,UIScrollViewDelegate, UITableViewDataSour
                 }
 
                 tableView!.frame =  CGRectMake(0, CGRectGetMinY(backgroundScrollView!.frame) + CGRectGetHeight(backgroundScrollView!.frame), tableView!.frame.size.width, maxHeight)
-                println("In If \(maxHeight)")
+//                println("In If \(maxHeight)")
 
                 var contentOffsetY:CGFloat = -backgroundScrollViewLimit * kBackgroundParallexFactor
                 backgroundScrollView?.setContentOffset(CGPointMake(0, contentOffsetY), animated: false)
@@ -134,7 +134,7 @@ class ViewController: UIViewController,UIScrollViewDelegate, UITableViewDataSour
                 }
 
 
-                println("In Else \(maxHeight)")
+//                println("In Else \(maxHeight)")
                 tableView!.frame =  CGRectMake(0, CGRectGetMinY(backgroundScrollView!.frame) + CGRectGetHeight(backgroundScrollView!.frame), tableView!.frame.size.width, maxHeight)
                 backgroundScrollView?.setContentOffset(CGPointMake(0, -delta * kBackgroundParallexFactor), animated: false)
 
