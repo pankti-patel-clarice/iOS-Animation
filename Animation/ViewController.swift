@@ -65,13 +65,10 @@ class ViewController: UIViewController,UIScrollViewDelegate, UITableViewDataSour
         tableView?.backgroundColor = UIColor.clearColor()
         tableViewHeight = tableView.frame.size.height
         
-
-        
     }
     
     override func viewDidAppear(animated: Bool) {
         
-        mainScrollView!.contentSize = CGSizeMake(CGRectGetWidth(self.view.frame), tableView!.contentSize.height + CGRectGetHeight(backgroundScrollView!.frame));
 
     }
 
@@ -82,73 +79,88 @@ class ViewController: UIViewController,UIScrollViewDelegate, UITableViewDataSour
 
     func scrollViewDidScroll(scrollView: UIScrollView) {
         
-        var delta:CGFloat = 0.0
-        var rect:CGRect = CGRectMake(0, 0, self.view.frame.size.width, header_height)
-        
-        if (scrollView.contentOffset.y < 0.0) {
+        if scrollView == mainScrollView{
+            var delta:CGFloat = 0.0
+            var rect:CGRect = CGRectMake(0, 0, self.view.frame.size.width, header_height)
             
-            delta = fabs(min(0.0, mainScrollView!.contentOffset.y))
-            backgroundScrollView!.frame = CGRectMake(CGRectGetMinX(rect) - delta / 2.0, CGRectGetMinY(rect) - delta, CGRectGetWidth(rect) + delta, CGRectGetHeight(rect) + delta)
-            tableView!.setContentOffset(CGPointZero, animated: true)
-            
-        } else {
-            delta = mainScrollView!.contentOffset.y
-            
-//            println(delta)
-            if delta > 0 {
-            
-                mainImageView!.alpha = min(1 , delta * kBlurFadeInFactor);
-            }
-            
-           
-            var backgroundScrollViewLimit:CGFloat = backgroundScrollView!.frame.size.height - kBarHeight;
-
-            if (delta > backgroundScrollViewLimit) {
+            if (scrollView.contentOffset.y < 0.0) {
                 
-                backgroundScrollView!.frame = CGRectMake(0, delta - backgroundScrollView!.frame.size.height + kBarHeight, self.view.frame.size.width, header_height)
+                delta = fabs(min(0.0, mainScrollView!.contentOffset.y))
+                backgroundScrollView!.frame = CGRectMake(CGRectGetMinX(rect) - delta / 2.0, CGRectGetMinY(rect) - delta, CGRectGetWidth(rect) + delta, CGRectGetHeight(rect) + delta)
+                tableView!.setContentOffset(CGPointZero, animated: false)
+                tableView.scrollEnabled = false
                 
-                tableView!.contentOffset = CGPointMake (0, delta - backgroundScrollViewLimit);
-                var height:CGFloat = tableView.contentSize.height
-                var maxHeight:CGFloat = tableViewHeight! + delta
+            } else {
+                delta = mainScrollView!.contentOffset.y
                 
-                if (maxHeight > height){
+//                            println(delta)
+                if delta > 0 {
                     
-                    maxHeight = height;
+                    mainImageView!.alpha = min(1 , delta * kBlurFadeInFactor);
                 }
-
-                tableView!.frame =  CGRectMake(0, CGRectGetMinY(backgroundScrollView!.frame) + CGRectGetHeight(backgroundScrollView!.frame), tableView!.frame.size.width, maxHeight)
-
-                var contentOffsetY:CGFloat = -backgroundScrollViewLimit * kBackgroundParallexFactor
-                backgroundScrollView?.setContentOffset(CGPointMake(0, contentOffsetY), animated: false)
-            }
-            else {
                 
-                backgroundScrollView!.frame = rect
-                var height:CGFloat = tableView.contentSize.height
-                var maxHeight:CGFloat = tableViewHeight!+delta
                 
-                if (maxHeight > height){
+                var backgroundScrollViewLimit:CGFloat = backgroundScrollView!.frame.size.height - kBarHeight;
+                
+                if (ceil(delta) > ceil(backgroundScrollViewLimit)) {
                     
-                    maxHeight = height;
+                    backgroundScrollView!.frame = CGRectMake(0, delta - backgroundScrollView!.frame.size.height + kBarHeight, self.view.frame.size.width, header_height)
+                    
+//                    tableView!.contentOffset = CGPointMake (0, delta - backgroundScrollViewLimit);
+                    var height:CGFloat = tableView.contentSize.height
+                    var maxHeight:CGFloat = tableViewHeight! + delta
+                    
+                    if (maxHeight > height){
+                        
+                        maxHeight = height;
+                    }
+                    
+                    tableView!.frame =  CGRectMake(0, CGRectGetMinY(backgroundScrollView!.frame) + CGRectGetHeight(backgroundScrollView!.frame), tableView!.frame.size.width, tableView!.frame.size.height)
+                    tableView.scrollEnabled = true
+//                    println("in if")
+                    var contentOffsetY:CGFloat = -backgroundScrollViewLimit * kBackgroundParallexFactor
+                    backgroundScrollView?.setContentOffset(CGPointMake(0, contentOffsetY), animated: false)
                 }
+                else {
+                    
+                    
+                    if ceil(delta) < ceil(backgroundScrollViewLimit){
+                        
+                        tableView.scrollEnabled = false
 
+//                        println("in condition")
+//                        println(delta) 
+                    }
+//                    println("in else")
 
-                tableView!.frame =  CGRectMake(0, CGRectGetMinY(backgroundScrollView!.frame) + CGRectGetHeight(backgroundScrollView!.frame), tableView!.frame.size.width, maxHeight)
-                tableView!.contentOffset = CGPointMake (0, 0);
+                    backgroundScrollView!.frame = rect
+                    var height:CGFloat = tableView.contentSize.height
+                    var maxHeight:CGFloat = tableViewHeight!+delta
+                    
+                    if (maxHeight > height){
+                        
+                        maxHeight = height;
+                    }
+                    
+//                    tableView!.contentOffset = CGPointMake (0, 0);
 
-                backgroundScrollView?.setContentOffset(CGPointMake(0, -delta * kBackgroundParallexFactor), animated: false)
-
+                    tableView!.frame =  CGRectMake(0, CGRectGetMinY(backgroundScrollView!.frame) + CGRectGetHeight(backgroundScrollView!.frame), tableView!.frame.size.width, maxHeight)
+                    
+                    mainScrollView!.contentSize = CGSizeMake(CGRectGetWidth(self.view.frame), tableView!.frame.size.height + CGRectGetHeight(backgroundScrollView!.frame));
+                    
+                    backgroundScrollView?.setContentOffset(CGPointMake(0, -delta * kBackgroundParallexFactor), animated: false)
+                    
+                }
             }
+            
         }
-
-
     }
     
    
     
     func tableView(tableView:UITableView, numberOfRowsInSection section:Int) -> Int
     {
-        return 20
+        return 50
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
@@ -159,7 +171,7 @@ class ViewController: UIViewController,UIScrollViewDelegate, UITableViewDataSour
             cell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: "cell")
         }
         
-        println(indexPath.row)
+        //println(indexPath.row)
         cell?.backgroundColor = UIColor.clearColor()
         cell!.textLabel?.text = "Row \(indexPath.row)"
         return cell!
